@@ -1,0 +1,60 @@
+<div class="row">
+    <div class="col-8 mx-auto mt-6">
+        <div class="card text-white border-light bg-dark">
+            <div class="card-header">
+                <h3>Nuevo Usuario</h3>
+            </div>
+            <div class="card-body">
+                <form [formGroup]="registerForm" (ngSubmit)="onRegister()">
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" class="form-control" formControlName="email" value="" required>
+                        <div class="invalid-field" *ngIf="checkField('email')">
+                            <!-- <small>{{getErrorMessage('email')}}</small> -->
+                            <small>{{fieldMessage('email')}}</small>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Contraseña</label>
+                        <input type="text" class="form-control" formControlName="password" required>
+                        <div class="invalid-field" *ngIf="checkField('password')">
+                            <small>{{fieldMessage('password')}}</small>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Nombre</label>
+                        <input type="text" class="form-control" formControlName="nombre" required>
+                        <div class="invalid-field" *ngIf="checkField('nombre')">
+                            <small>{{fieldMessage('nombre')}}</small>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Apellido</label>
+                        <input type="text" class="form-control" formControlName="apellido" required>
+                        <div class="invalid-field" *ngIf="checkField('apellido')">
+                            <small>{{fieldMessage('apellido')}}</small>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Fecha de Nacimiento</label>
+                        <input type="date" class="form-control" formControlName="nacimiento" required>
+                        <div class="invalid-field" *ngIf="checkField('nacimiento')">
+                            <small>{{fieldMessage('nacimiento')}}</small>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Grado de Estudios</label>
+                        <select class="custom-select" formControlName="grado">
+                            <option value="" disabled>Seleccione ....</option>
+                            <option *ngFor="let g of grado" value={{g.id}}>{{g.descripcion}}</option>
+                        </select>
+                        <div class="invalid-field" *ngIf="checkField('grado')">
+                            <small>{{fieldMessage('grado')}}</small>
+                        </div>
+                    </div>
+                    <button [disabled]="registerForm.invalid" type="submit" class="btn btn-outline-light btn-block">Registrarse</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
