@@ -1,7 +1,7 @@
 import { HttpHandler, HttpInterceptor, HttpRequest } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
-import { AuthService } from "../services/auth.service";
+import { AuthService } from "../services/auth/auth.service";
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
@@ -12,7 +12,7 @@ export class AuthInterceptor implements HttpInterceptor {
         const userValue = this.authService.userValue; //parte del refactor
 
         //construccion basica para agregar datos en los headres, en este caso es para enviar el token para poder acceder a recursos protegidos en la API
-        /* if (req.url.includes('grado-estudio')) {
+        if (req.url.includes('publicacion')) {
             const authReq = req.clone({
                 setHeaders: {
                     //auth: authToken,
@@ -20,7 +20,7 @@ export class AuthInterceptor implements HttpInterceptor {
                 }
             });
             return next.handle(authReq);
-        } */
+        }
 
         return next.handle(req);
     }

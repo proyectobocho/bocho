@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
-import { AuthService } from 'src/app/services/auth.service';
+import { Component, Input, OnInit } from '@angular/core';
+import { AuthService } from 'src/app/services/auth/auth.service';
+import { PublicacionService } from 'src/app/services/publicacion/publicacion.service';
 
 @Component({
   selector: 'app-home',
@@ -8,14 +9,21 @@ import { AuthService } from 'src/app/services/auth.service';
 })
 export class HomeComponent implements OnInit {
 
-  user: any;
+  //user: any;
+  flag:boolean=false;
+  publicacion:any=[];
 
-  constructor(public authService: AuthService) { }
+  constructor(private publicacionService:PublicacionService) { }
 
   ngOnInit(): void {
-    if (this.authService.userValue != null) {
-      this.user = this.authService.userValue.user;
-    }
+    this.publicacionService.getAll().subscribe((res)=>{
+      //console.log("res: ",res);
+      let p:any=res;
+      this.publicacion=p.publicacion;
+    })
   }
 
+  refresh(flag:boolean){
+    this.ngOnInit();
+  }
 }

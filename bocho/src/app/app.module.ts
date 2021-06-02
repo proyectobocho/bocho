@@ -10,6 +10,7 @@ import { LoginComponent } from './components/login/login.component';
 import { RegisterComponent } from './components/register/register.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { PresentationComponent } from './components/presentation/presentation.component';
+import { PublicacionComponent } from './components/publicacion/publicacion.component';
 
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AuthInterceptor } from './interceptors/auth-interceptor';
@@ -21,7 +22,8 @@ import { AuthInterceptor } from './interceptors/auth-interceptor';
     LoginComponent,
     RegisterComponent,
     NavbarComponent,
-    PresentationComponent
+    PresentationComponent,
+    PublicacionComponent
   ],
   imports: [
     BrowserModule,

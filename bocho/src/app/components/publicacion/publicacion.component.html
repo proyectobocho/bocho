@@ -1,0 +1,42 @@
+<div class="card border-dark">
+    <div class="card-header bg-dark text-white">
+        Crear Publicacion
+    </div>
+    <form [formGroup]="publicacionForm" (ngSubmit)="onSubmit()">
+        <div class="card-body">
+            <div class="form-group form-row">
+                <label class="col">Visibilidad: </label>
+                <select class="form-control col" formControlName="privado">
+                    <option disabled selected>Seleccione</option>
+                    <option value={{true}}>Privado</option>
+                    <option value={{false}}>Publico</option>
+                </select>
+                <div class="invalid-field col" *ngIf="checkField('privado')">
+                    <small>{{fieldMessage('privado')}}</small>
+                </div>
+            </div>
+            <div class="form-group">
+                <textarea class="form-control" rows="8"
+                    placeholder="¿Que estas pensando, {{user.nombre | uppercase}}?" formControlName="contenido"></textarea>
+                <div class="invalid-field" *ngIf="checkField('contenido')">
+                    <small>{{fieldMessage('contenido')}}</small>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Añadir Link de Documento</label>
+                <input type="text" class="form-control" formControlName="linkDoc">
+                <div class="invalid-field" *ngIf="checkField('linkDoc')">
+                    <small>{{fieldMessage('linkDoc')}}</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-footer bg-dark">
+            <div class="btn-group btn-group-lg btn-block" role="group">
+                <button class="btn btn-outline-light" type="submit" [disabled]="publicacionForm.invalid">Publicar</button>
+                <button type="button"class="btn btn-outline-warning" (click)="sendCancel()">Cancelar</button>
+            </div>
+        </div>
+    </form>
+</div>
+<br>
