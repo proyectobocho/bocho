@@ -16,18 +16,23 @@ export class LoginComponent implements OnInit, OnDestroy {
   private subscription: Subscription = new Subscription();
 
   loginForm = this.formB.group({
-    email: ['',[Validators.required]],
-    password: ['',[Validators.required]]
+    email: ['', [Validators.required]],
+    password: ['', [Validators.required]]
   });
 
-  constructor(public authService: AuthService, private formB: FormBuilder, private router: Router, public baseError:BaseErrorMessage) { }
+  constructor(
+    public authService: AuthService,
+    private formB: FormBuilder,
+    private router: Router,
+    public baseError: BaseErrorMessage
+    ) { }
 
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
   }
 
   ngOnInit(): void {
-    this.baseError.base=this.loginForm;
+    this.baseError.base = this.loginForm;
   }
 
   onLogin() {
@@ -43,11 +48,11 @@ export class LoginComponent implements OnInit, OnDestroy {
     );
   }
 
-  checkField(field:string):boolean{
-    return  this.baseError.isValidField(field);
+  checkField(field: string): boolean {
+    return this.baseError.isValidField(field);
   }
 
-  fieldMessage(field:string):string{
+  fieldMessage(field: string): string {
     return this.baseError.getErrorMessage(field);
   }
 

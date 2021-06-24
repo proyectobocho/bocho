@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { AuthService } from 'src/app/services/auth/auth.service';
@@ -14,16 +14,18 @@ export class PublicacionComponent implements OnInit {
 
   private subscription: Subscription = new Subscription();
   user: any;
-  creado:boolean=false;
+  creado: boolean = false;
   @Output() flagEvent = new EventEmitter<boolean>();
+  @Input() idGroup:number = null;
 
   //falta refrescar el homecomponent
-  @Output() creadoEvent=new EventEmitter<boolean>();
+  //@Output() creadoEvent = new EventEmitter<boolean>();
 
   publicacionForm = this.formB.group({
     contenido: ['', [Validators.required, Validators.minLength(5)]],
     linkDoc: ['', [Validators.required, Validators.minLength(4)]],
-    privado: ['', [Validators.required]]
+    privado: ['false', [Validators.required]],
+    titulo: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(50)]]
   });
   //{ contenido, linkDoc, privado }
   constructor(
@@ -36,6 +38,7 @@ export class PublicacionComponent implements OnInit {
   ngOnInit(): void {
     this.user = this.authService.userValue.user;
     this.baseError.base = this.publicacionForm;
+    //console.log(this.idGroup);
   }
 
   onSubmit() {
@@ -46,13 +49,14 @@ export class PublicacionComponent implements OnInit {
     console.log(formValue);
     this.subscription.add(
       this.publicacionService
-        .new(formValue)
+        .new(formValue, this.idGroup)
         .subscribe((res => {
           if (res) {
             console.log("res: ", res);
             window.alert("Se realizo la publicacion");
-            this.ngOnInit;
-            this.creado=true;
+            this.ngOnInit();
+            this.sendCancel();
+            this.creado = true;
           }
         }))
     );
@@ -62,11 +66,11 @@ export class PublicacionComponent implements OnInit {
     this.flagEvent.emit(false);
   }
 
-  sendSubmit(){
-    if(this.creado==true){
+  /* sendSubmit() {
+    if (this.creado == true) {
       this.creadoEvent.emit(true);
     }
-  }
+  } */
 
   checkField(field: string): boolean {
     return this.baseError.isValidField(field);

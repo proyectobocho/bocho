@@ -4,7 +4,14 @@
     </div>
     <form [formGroup]="publicacionForm" (ngSubmit)="onSubmit()">
         <div class="card-body">
-            <div class="form-group form-row">
+            <div class="form-group">
+                <label>Titulo:</label>
+                <input type="text" formControlName="titulo" class="form-control">
+                <div class="invalid-field col" *ngIf="checkField('titulo')">
+                    <small>{{fieldMessage('titulo')}}</small>
+                </div>
+            </div>
+            <div class="form-group form-row" *ngIf="!idGroup">
                 <label class="col">Visibilidad: </label>
                 <select class="form-control col" formControlName="privado">
                     <option disabled selected>Seleccione</option>
@@ -15,6 +22,7 @@
                     <small>{{fieldMessage('privado')}}</small>
                 </div>
             </div>
+            <input type="text" value="false" formControlName="privado" *ngIf="idGroup" hidden>
             <div class="form-group">
                 <textarea class="form-control" rows="8"
                     placeholder="¿Que estas pensando, {{user.nombre | uppercase}}?" formControlName="contenido"></textarea>
@@ -39,4 +47,3 @@
         </div>
     </form>
 </div>
-<br>

@@ -1,0 +1,205 @@
+<div class="row">
+    <div class="col-3" style="background-color: ghostwhite;">
+        <br>
+        <div class="col-12" style="background-color: gray; padding-top: 5px; padding-bottom: 10px; border-radius: 5%;">
+            <h3 style="color: white;">Grupos</h3>
+            <input type="text" class="form-control" placeholder="Buscar grupos ..." name="filter" [(ngModel)]="filter">
+            <br>
+            <select class="custom-select" [(ngModel)]="group" (click)="ver()">
+                <option selected disabled>Ver Resultados</option>
+                <option *ngFor="let g of grupos | filter:filter" value={{g|json}}>{{g.nombre}}</option>
+            </select>
+        </div>
+        <br>
+        <div class="col-12" style="background-color: gray; padding-top: 5px; padding-bottom: 10px; border-radius: 5%;">
+            <h3 style="color: white;">Mis Grupos</h3>
+            <div class="card" *ngFor="let mg of misGrupos">
+                <div class="row no gutters text-center">
+                    <div class="col-md-5">
+                        <img src={{mg.grupo.foto}} alt="error :V" class="img-thumbnail" width="100%" height="100%">
+                    </div>
+                    <div class="col-md-7">
+                        <h6 class="card-tittle">{{mg.grupo.nombre}}</h6>
+                        <button type="button" class="btn btn-sm btn-block btn-outline-secondary"
+                            (click)="seleccionado(mg.grupo.id)" (click)="search=false">Ver</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br>
+        <div class="col-12" style="background-color: gray; padding-top: 10px; padding-bottom: 10px; border-radius: 5%;">
+            <button type="button" class="btn btn-outline-light btn-block" (click)="newGroup(nuevogrupo)">Nuevo
+                Grupo</button>
+        </div>
+        <br>
+    </div>
+    <div class="col-9" style="background-color: rgb(193, 193, 196);">
+        <br>
+        <div class="card" *ngIf="selected">
+            <div class="center-cropped">
+                <img src={{grupo.foto}} alt="error :V" class="card-img-top">
+            </div>
+            <hr>
+            <div class="card-body">
+                <br>
+                <h4 class="card-tittle">{{grupo.nombre}}</h4>
+                <p><small class="text-muted">Creado: {{grupo.creacion | date :'dd-mm-yyyy HH:mm:ss'}}</small></p>
+                <p class="card-text"><strong>Descripción: </strong>{{grupo.descripcion}}</p>
+                <p class="card-text"><small>Mi rol: {{miRol.rol}}</small></p>
+                <div class="btn-group btn">
+                    <button (click)="desunirse(grupo.id)" class="btn btn-outline-danger">Desunirse</button>
+                    <button *ngIf="miRol.rol=='admin'" (click)="editGroup(nuevogrupo)" class="btn btn-outline-warning">Editar</button>
+                    <button *ngIf="miRol.rol=='admin'" (click)="eliminarGrupo(grupo.id)" class="btn btn-outline-danger">Eliminar</button>
+                </div>
+                <hr>
+                <h6 class="card-text font-weight-bold">Publicaciones:</h6>
+                <div class="text-center" *ngIf="!flag">
+                    <button type="button" class="btn btn-outline-dark" (click)="flag=true">Crear Publicacion</button>
+                </div>
+                <br>
+                <div class="row justify-content-center" *ngIf="flag">
+                    <div class="col-6">
+                        <app-publicacion [idGroup]="idGrupo" (flagEvent)="creado($event)"></app-publicacion>
+                    </div>
+                </div>
+                <br>
+                <div class="row justify-content-center">
+                    <div class="col-10 col-sm-8 col-md-11 col-lg-8 col-xl-7" *ngFor="let p of grupo.publicaciones">
+                        <div class="card mb-3 publicacion">
+                            <div class="row no-gutters">
+                                <div class="col-md-4">
+                                    <img src={{p.linkDoc}} alt="no se pudo cargar la imagen" class="rounded img">
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="card-body">
+                                        <h5 class="card-title text-capitalize font-italic ">{{p.titulo}}</h5>
+                                        <small class="text-muted">Usuario: {{p.user.nombre}}
+                                            {{p.user.apellido}}, Contacto: {{p.user.email}}</small>
+                                        <hr>
+                                        <p style="overflow-y: scroll; height: 200px; resize: none;"
+                                            class="card-text text-justify">{{p.contenido}}</p>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 text-center">
+                                    <hr>
+                                    <button type="button" class="btn btn-outline-dark btn-block"
+                                        (click)="open(comentarios,p.id)">Ver {{p.comentario.length}} comentarios /
+                                        Comentar</button>
+                                </div>
+                                <div class="col-md-12">
+                                    <hr>
+                                    <p class="card-text">
+                                        <small class="text-muted">Publicado: {{p.fecha | date:'d/M/yyyy H:mm:ss'}}</small> -
+                                        <small class="text-muted">Modificado: {{p.modificado | date:'d/M/yyyy H:mm:ss'}}</small>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <br>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br>
+        <div *ngIf="!selected">
+            <h6>Selecione un grupo para ver o Busque uno</h6>
+        </div>
+
+        <div class="card" *ngIf="search===true">
+            <div class="card-header">
+                <div class="center-cropped">
+                    <img src={{group.foto}} alt="error :V" class="card-img-top">
+                </div>
+            </div>
+            <div class="card-body">
+                <h5 class="card-tittle">{{group.nombre}}</h5>
+                <p class="card-text text-muted">Descripcion: {{group.descripcion}}</p>
+                <p class="card-text"><small class="text-muted">Creado: {{group.creacion | date:'dd-mm-yyyy HH:mm:ss'}}</small></p>
+            </div>
+            <div class="card-footer">
+                <button type="button" class="btn btn-block btn-outline-primary" (click)="unirse()">Unirme</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<ng-template #comentarios let-modal>
+    <div class="modal-header">
+        <h4 class="modal-tittle">Comentarios</h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body text-center">
+        <button type="button" (click)="comentar=!comentar" class="btn btn-outline-secondary"
+            *ngIf="!comentar">Comentar</button>
+        <form [formGroup]="comentarioForm" (ngSubmit)="onSubmit()" *ngIf="comentar">
+            <div class="card border-secondary">
+                <div class="card-header">
+                    <label>Comentario</label>
+                </div>
+                <div class="card-body">
+                    <div class="form-group">
+                        <input type="text" class="form-control" formControlName="descripcion"
+                            placeholder="escriba aqui ...">
+                        <div class="invalid-field" *ngIf="checkField('descripcion')">
+                            <small>{{fieldMessage('descripcion')}}</small>
+                        </div>
+                    </div>
+                </div>
+                <div class=" card-footer btn-group btn-block">
+                    <button type="submit" class="btn btn-outline-success">Comentar</button>
+                    <button type="button" class="btn btn-outline-warning" (click)="comentar=!comentar">Cancelar</button>
+                </div>
+            </div>
+        </form>
+
+    </div>
+    <hr>
+    <div class="modal-body">
+        <div class=" alert alert-secondary" *ngFor="let c of coments">
+            <p class="card-text text-center"> <strong>{{c.user.nombre | titlecase}} {{c.user.apellido |
+                    titlecase}}</strong>: {{c.descripcion}} <br><small class="text-muted">Fecha: {{c.fecha |
+                    date:'d/M/yyyy H:mm:ss'}}</small></p>
+        </div>
+    </div>
+</ng-template>
+
+<ng-template #nuevogrupo let-modal>
+    <div class="modal-header">
+        <h4 class="modal-tittle">Grupo</h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <form [formGroup]="grupoForm" (ngSubmit)="onOk()">
+        <div class="modal-body">
+            <div class="form-group">
+                <label>Nombre del Grupo:</label>
+                <input type="text" class="form-control" formControlName="nombre">
+                <div class="invalid-field" *ngIf="checkField('nombre')">
+                    <small>{{fieldMessage('nombre')}}</small>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Descripcion del Grupo:</label>
+                <input type="text" class="form-control" formControlName="descripcion">
+                <div class="invalid-field" *ngIf="checkField('descripcion')">
+                    <small>{{fieldMessage('descripcion')}}</small>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>URL de imagen:</label>
+                <input type="url" class="form-control" formControlName="foto">
+                <div class="invalid-field" *ngIf="checkField('foto')">
+                    <small>{{fieldMessage('foto')}}</small>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="submit" class="btn btn-block btn-outline-success">Aceptar</button>
+        </div>
+    </form>
+
+</ng-template>

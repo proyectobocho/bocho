@@ -12,7 +12,7 @@ export class AuthInterceptor implements HttpInterceptor {
         const userValue = this.authService.userValue; //parte del refactor
 
         //construccion basica para agregar datos en los headres, en este caso es para enviar el token para poder acceder a recursos protegidos en la API
-        if (req.url.includes('publicacion')) {
+        if (req.url.includes('publicacion') || req.url.includes('comentario') || req.url.includes('grupo') || req.url.includes('integrante')) {
             const authReq = req.clone({
                 setHeaders: {
                     //auth: authToken,

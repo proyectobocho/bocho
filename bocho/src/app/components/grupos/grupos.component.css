@@ -1,0 +1,17 @@
+.center-cropped {
+    object-fit: none; /* Do not scale the image */
+    object-position: center; /* Center the image within the element */
+    height: 100%;
+    width: 200px;
+  }
+  /* img{
+      display: block;
+      margin: auto;
+  } */
+
+  .img{
+    width: 100%;
+    height: auto;
+    max-width: 450px;
+    max-height: 600px;
+}

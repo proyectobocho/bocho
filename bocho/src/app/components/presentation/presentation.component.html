@@ -1,1 +1,50 @@
-<img src="https://www.nascia.com/wp-content/uploads/2019/10/la-mente.jpg" class="img-fluid w-100 rounded mx-auto d-block" alt="">
+<div class="row">
+    <div *ngIf="flag" class="col-6"
+        style="@import url(https://fonts.googleapis.com/css?family=Cabin:400); background-color: #1E2436; color: white; font-family: 'Poppins', sans-serif;">
+
+
+        <h5><strong>QUE ES BOCHO??</strong> </h5>
+        <p>
+            Es el sitio donde se juntan todos los creativos, inventores y desarrolladores de las mejores ideas y
+            soluciones
+            técnicas a distintos problemas.
+            Que mejor que encontrar un lugar para que todos juntos podamos mejorar el conocimiento y la ciencia,
+            enfoncandonos en el trabajo libre de equipos, mediante aprovechar este movimiento social de grandes mentes!
+            SUMATE A LA EXPERIENCIA PARA SUMAR CONOCIMIENTOS AL FUTURO!
+        </p>
+        <br>
+        <br>
+        <h5><strong>QUIENES SOMOS:</strong> </h5>
+
+        <p>
+            Somos un equipo dedicado al desarrollo de aplicaciones y sitios web creativos.
+            Nuestra experiencia y dedicación pueden ser la solución para los problemas de su empresa, o para la mejora
+            de su
+            sistema de trabajo.
+            La eficiencia en este mundo tecnológico se torna escencial para no quedarse en el tiempo y lograr llegar a
+            mas
+            clientes con la mayor eficacia posible.
+            Contactenos para conocernos mejor y poder ayudarlo a enfocarse en nuevas estrategias que mejoren la
+            rentabilidad
+            y practicidad de su negocio.
+            <br>
+            <br>
+            Los esperamos.. <br>
+            Atte. GRUPO BOCHO
+        </p>
+    </div>
+
+
+    <div *ngIf="flag" class="col-6">
+        <img src="https://www.nascia.com/wp-content/uploads/2019/10/la-mente.jpg"
+            class="img-fluid w-100 rounded mx-auto d-block imagen" alt="error :V">
+    </div>
+</div>
+
+
+<div *ngIf="!flag">
+    <video autoplay muted>
+        <source src="assets/bochazo-energia_2.mp4">
+    </video>
+</div>
+<br>

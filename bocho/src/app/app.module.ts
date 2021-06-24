@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AppRoutingModule } from './app-routing.module';
 
@@ -14,6 +14,10 @@ import { PublicacionComponent } from './components/publicacion/publicacion.compo
 
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AuthInterceptor } from './interceptors/auth-interceptor';
+import { PublicacionesComponent } from './components/publicaciones/publicaciones.component';
+import { BooleanPipe } from './pipes/boolean/boolean.pipe';
+import { GruposComponent } from './components/grupos/grupos.component';
+import { FilterPipe } from './pipes/filter/filter.pipe';
 
 @NgModule({
   declarations: [
@@ -23,14 +27,19 @@ import { AuthInterceptor } from './interceptors/auth-interceptor';
     RegisterComponent,
     NavbarComponent,
     PresentationComponent,
-    PublicacionComponent
+    PublicacionComponent,
+    PublicacionesComponent,
+    BooleanPipe,
+    GruposComponent,
+    FilterPipe
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     NgbModule,
     HttpClientModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    FormsModule
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }

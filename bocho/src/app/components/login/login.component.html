@@ -1,25 +1,27 @@
 <div class="row">
     <div class="col-8 mx-auto mt-6 ">
         <div class="card text-white border-light bg-dark">
-            <div class="card-header">
-                <h3>Login</h3>
+            <div class="card-header text-center">
+                <h3>LOGIN</h3>
             </div>
             <div class="card-body">
                 <form [formGroup]="loginForm" (ngSubmit)="onLogin()">
                     <div class="form-group">
                         <label>Email</label>
-                        <input type="email" class="form-control" formControlName="email" aria-describedby="emailHelp" required>
+                        <input type="email" class="form-control" formControlName="email" required>
                         <div class="invalid-field" *ngIf="checkField('email')">
                             <small>{{fieldMessage('email')}}</small>
                         </div>
                     </div>
                     <div class="form-group">
                         <label>Password</label>
-                        <input type="password" class="form-control" formControlName="password"
-                            aria-describedby="emailHelp" required>
-                        <!-- <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small> -->
+                        <input type="password" class="form-control" formControlName="password" required>
+                        <div class="invalid-field" *ngIf="checkField('password')">
+                            <small>{{fieldMessage('password')}}</small>
+                        </div>
                     </div>
-                    <button type="submit" class="btn btn-outline-light btn-block">Acceder</button>
+                    <button type="submit" [disabled]="this.loginForm.invalid"
+                        class="btn btn-outline-light btn-block">Acceder</button>
                 </form>
             </div>
         </div>

@@ -1,0 +1,78 @@
+<div class="row justify-content-center">
+    <div class="col-10 col-sm-8 col-md-11 col-lg-8 col-xl-7" *ngFor="let p of publicacion">
+        <div class="card mb-3 publicacion">
+            <div class="row no-gutters">
+                <div class="col-md-4">
+                    <img src={{p.linkDoc}} alt="no se pudo cargar la imagen" class="rounded img">
+                </div>
+                <div class="col-md-8">
+                    <div class="card-body">
+                        <h5 class="card-title text-capitalize font-italic ">{{p.titulo}}</h5>
+                        <p class="card-text"*ngIf="p.grupo!=null"><small class="text-muted" >Grupo: {{p.grupo.nombre}}</small></p>
+                        <p class="card-text"><small class="text-muted">Privado: {{p.privado | boolean}}</small></p>
+                        <p class="card-text text-justify" style="overflow-y: scroll; height: 200px; resize: none;">{{p.contenido}}</p>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="card-body">
+                        <p class="card-text"><small class="text-muted">Publicado: {{p.fecha | date:'d/M/yyyy H:mm:ss'}}</small> -
+                            <small class="text-muted">Modificado: {{p.modificado | date:'d/M/yyyy H:mm:ss'}}</small>
+                        </p>
+                        <p>Comentarios: {{p.comentario.length}}</p>
+                    </div>
+                </div>
+                <div class="col-md-12" *ngIf="p.comentario.length>0">
+                    <div class="card-body">
+                        <p class="card-text alert alert-secondary" *ngFor="let c of p.comentario">{{c.user.nombre | titlecase}} {{c.user.apellido | titlecase}} :  <small>{{c.descripcion}}</small></p>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="card-footer">
+                        <div class="btn-group btn-block" role="group">
+                            <button type="button" class="btn btn-warning" (click)="open(content,p)">Editar
+                                ✏️</button>
+                            <button type="button" class="btn btn-danger" (click)="eliminar(p.id)">Eliminar 🗑️</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br>
+    </div>
+</div>
+
+<ng-template #content let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Editar Publicacion</h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <form [formGroup]="publicacionForm" (ngSubmit)="editar()">
+            <div class="form-group">
+                <label>Titulo: </label>
+                <input class="form-control" type="text" formControlName="titulo">
+            </div>
+            <div class="form-group form-row">
+                <label class="col">Visibilidad: </label>
+                <select class="form-control col" formControlName="privado">
+                    <option disabled selected>Seleccione</option>
+                    <option value={{true}}>Privado</option>
+                    <option value={{false}}>Publico</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Contenido</label>
+                <textarea formControlName="contenido" rows="8" class="form-control"></textarea>
+            </div>
+            <div class="form-group">
+                <label>Link de Imagen</label>
+                <input type="text" class="form-control" formControlName="linkDoc">
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-outline-dark">Aceptar</button>
+            </div>
+        </form>
+    </div>
+</ng-template>

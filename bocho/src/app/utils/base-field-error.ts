@@ -5,7 +5,7 @@ import { FormBuilder, FormGroup } from "@angular/forms";
 
 export class BaseErrorMessage {
 
-    private isValidEmail = /\S+@\S+\.\S+/;
+    //private isValidEmail = /\S+@\S+\.\S+/;
     private errorMessage: any;
     base: FormGroup;
 
@@ -26,10 +26,12 @@ export class BaseErrorMessage {
 
         if (errors) {
             const minlength = errors?.minlength?.requiredLength;
+            const maxlength = errors?.maxlength?.requiredLength;
             const messages: any = {
                 required: 'Campo obligatorio',
                 pattern: 'No es un email valido',
-                minlength: `Campo de minimo ${minlength} caracteres`
+                minlength: `Campo de minimo ${minlength} caracteres`,
+                maxlength: `Campo de maximo ${maxlength} caracteres`,
             };
 
             const errorKey = Object.keys(errors).find(Boolean);

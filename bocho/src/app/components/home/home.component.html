@@ -1,34 +1,85 @@
 <div class="text-center" *ngIf="!flag">
-    <button type="button" class="btn btn-outline-dark" (click)="flag=true">Crear Publicacion</button>
+    <button type="button" class="btn btn-outline-light" (click)="flag=true">Crear Publicacion</button>
 </div>
 <br>
 <div class="row justify-content-center" *ngIf="flag">
     <div class="col-6">
-        <app-publicacion (flagEvent)="flag=$event"></app-publicacion>
+        <app-publicacion (flagEvent)="creado($event)"></app-publicacion>
     </div>
 </div>
+<br>
 <div class="row justify-content-center">
     <div class="col-10 col-sm-8 col-md-11 col-lg-8 col-xl-7" *ngFor="let p of publicacion">
-        <div class="card mb-3">
+        <div class="card mb-3 publicacion">
             <div class="row no-gutters">
                 <div class="col-md-4">
-                    <img src={{p.linkDoc}} class="rounded img">
+                    <img src={{p.linkDoc}} alt="no se pudo cargar la imagen" class="rounded img">
                 </div>
                 <div class="col-md-8">
                     <div class="card-body">
-                        <h5 class="card-title text-capitalize font-italic ">Usuario: {{p.user.nombre}} {{p.user.apellido}}</h5>
-                        <small class="text-muted">contacto: {{p.user.email}}</small>
+                        <h5 class="card-title text-capitalize font-italic ">{{p.titulo}}</h5>
+                        <small class="text-muted">Usuario: {{p.user.nombre}}
+                            {{p.user.apellido}}, Contacto: {{p.user.email}}</small>
                         <hr>
-                        <p class="card-text text-justify">{{p.contenido}}</p>
-                        <!-- <hr>
-                        <p class="card-text"><small class="text-muted">Publicado: {{p.fecha | date:'short'}}</small></p> -->
+                        <p style="overflow-y: scroll; height: 200px; resize: none;" class="card-text text-justify">{{p.contenido}}</p>
                     </div>
                 </div>
+                <div class="col-md-12 text-center">
+                    <hr>
+                    <button type="button" class="btn btn-outline-dark btn-block" (click)="open(comentarios,p.id)">Ver
+                        {{p.comentario.length}} comentarios / Comentar</button>
+                </div>
                 <div class="col-md-12">
-                    <p class="card-text"><small class="text-muted">Publicado: {{p.fecha | date:'short'}}</small></p>
+                    <hr>
+                    <p class="card-text">
+                        <small class="text-muted">Publicado: {{p.fecha | date:'d/M/yyyy H:mm:ss'}}</small> -
+                        <small class="text-muted">Modificado: {{p.modificado | date:'d/M/yyyy H:mm:ss'}}</small>
+                    </p>
                 </div>
             </div>
         </div>
         <br>
     </div>
 </div>
+
+<ng-template #comentarios let-modal>
+    <div class="modal-header">
+        <h4 class="modal-tittle">Comentarios</h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body text-center">
+        <button type="button" (click)="comentar=!comentar" class="btn btn-outline-secondary"
+            *ngIf="!comentar">Comentar</button>
+        <form [formGroup]="comentarioForm" (ngSubmit)="onSubmit()" *ngIf="comentar">
+            <div class="card border-secondary">
+                <div class="card-header">
+                    <label>Comentario</label>
+                </div>
+                <div class="card-body">
+                    <div class="form-group">
+                        <input type="text" class="form-control" formControlName="descripcion"
+                            placeholder="escriba aqui ...">
+                        <div class="invalid-field" *ngIf="checkField('descripcion')">
+                            <small>{{fieldMessage('descripcion')}}</small>
+                        </div>
+                    </div>
+                </div>
+                <div class=" card-footer btn-group btn-block">
+                    <button type="submit" class="btn btn-outline-success">Comentar</button>
+                    <button type="button" class="btn btn-outline-warning" (click)="comentar=!comentar">Cancelar</button>
+                </div>
+            </div>
+        </form>
+
+    </div>
+    <hr>
+    <div class="modal-body">
+        <div class=" alert alert-secondary" *ngFor="let c of coments">
+            <p class="card-text text-center"> <strong>{{c.user.nombre | titlecase}} {{c.user.apellido |
+                    titlecase}}</strong>: {{c.descripcion}} <br><small class="text-muted">Fecha: {{c.fecha |
+                    date:'d/M/yyyy H:mm:ss'}}</small></p>
+        </div>
+    </div>
+</ng-template>
