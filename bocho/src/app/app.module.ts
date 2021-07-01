@@ -18,6 +18,7 @@ import { PublicacionesComponent } from './components/publicaciones/publicaciones
 import { BooleanPipe } from './pipes/boolean/boolean.pipe';
 import { GruposComponent } from './components/grupos/grupos.component';
 import { FilterPipe } from './pipes/filter/filter.pipe';
+import { HtmlPipe } from './pipes/html/html.pipe';
 
 @NgModule({
   declarations: [
@@ -31,7 +32,8 @@ import { FilterPipe } from './pipes/filter/filter.pipe';
     PublicacionesComponent,
     BooleanPipe,
     GruposComponent,
-    FilterPipe
+    FilterPipe,
+    HtmlPipe
   ],
   imports: [
     BrowserModule,

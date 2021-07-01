@@ -1,10 +1,11 @@
 import { flatten } from '@angular/compiler';
-import { Component, Input, NgModule, OnInit } from '@angular/core';
+import { Component, Input, NgModule, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ComentariosService } from 'src/app/services/comentarios/comentarios.service';
 import { GrupoService } from 'src/app/services/grupo/grupo.service';
 import { IntegranteService } from 'src/app/services/integrante/integrante.service';
+import { LikeService } from 'src/app/services/like/like.service';
 import { BaseErrorMessage } from 'src/app/utils/base-field-error';
 
 @Component({
@@ -12,7 +13,7 @@ import { BaseErrorMessage } from 'src/app/utils/base-field-error';
   templateUrl: './grupos.component.html',
   styleUrls: ['./grupos.component.css']
 })
-export class GruposComponent implements OnInit {
+export class GruposComponent implements OnInit, OnDestroy {
 
   grupos: any = [];
   misGrupos: any = [];
@@ -28,6 +29,10 @@ export class GruposComponent implements OnInit {
   flag: boolean = false;
   miRol: any = "";
   falgEditar: boolean = false;
+
+  likes: any = [];
+  ok: any = [];
+  bloqueado: boolean = false;
 
   comentarioForm = this.formB.group({
     descripcion: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(120)]]
@@ -48,8 +53,12 @@ export class GruposComponent implements OnInit {
     private comentariosService: ComentariosService,
     private baseError: BaseErrorMessage,
     private formB: FormBuilder,
-    private integranteService: IntegranteService
+    private integranteService: IntegranteService,
+    private likeService: LikeService
   ) { }
+  ngOnDestroy(): void {
+    this.modalService.dismissAll();
+  }
 
   ngOnInit(): void {
     this.grupoService.getAll().subscribe(
@@ -69,11 +78,22 @@ export class GruposComponent implements OnInit {
     try {
       let aux = JSON.parse(this.group);
       this.group = aux;
-      this.search = true;
-      this.selected = false;
+      this.search = false;
+      this.selected = true;
+      this.bloqueado = false;
+      this.comparar(aux);
     } catch (error) {
       this.group = [];
-      this.search = false;
+      this.search = true;
+    }
+  }
+
+  private comparar(aux: any) {
+    for (let i of this.misGrupos) {
+      if (i.grupo.id == aux.id) {
+        this.bloqueado = true;
+        break;
+      }
     }
   }
 
@@ -81,8 +101,10 @@ export class GruposComponent implements OnInit {
     //console.log(this.group.id);
     this.integranteService.new(this.group.id).subscribe(
       (res) => {
-        window.alert(res.message);
+        //window.alert(res.message);
         this.ngOnInit();
+        this.selected = false;
+        this.search = false;
       }
     );
   }
@@ -91,9 +113,10 @@ export class GruposComponent implements OnInit {
     if (window.confirm("¿Desea desunirse del grupo?")) {
       this.integranteService.delete(id).subscribe(
         (res) => {
-          window.alert(res.message);
+          //window.alert(res.message);
           this.ngOnInit();
           this.selected = false;
+          this.search = false;
         }
       );
     }
@@ -107,6 +130,7 @@ export class GruposComponent implements OnInit {
         this.selected = true;
         this.idGrupo = id;
         this.miRol = res.rol;
+        this.search = true;
       }
     )
   }
@@ -118,9 +142,25 @@ export class GruposComponent implements OnInit {
       this.contenido = content;
       this.comentariosService.getAll(this.idPublicacion).subscribe((res) => {
         this.coments = res;
-      })
+      });
+      this.likeService.list(this.idPublicacion).subscribe((res) => {
+        this.likes = res;
+        let id = parseInt(localStorage.getItem("userId"));
+        this.ok = this.likes.find((x: any) => x.user.id == id);
+      });
     }
     this.modalService.open(content, { backdropClass: 'prueba' });
+  }
+
+  megusta() {
+    this.likeService.change(this.idPublicacion).subscribe(
+      (res) => {
+        console.log(res)
+        this.modalService.dismissAll();
+        this.ngOnInit();
+        this.open(this.contenido, this.idPublicacion);
+      }
+    );
   }
 
   newGroup(content: any) {
@@ -169,7 +209,7 @@ export class GruposComponent implements OnInit {
     }
   }
 
-  eliminarGrupo(id:any){
+  eliminarGrupo(id: any) {
     if (window.confirm("¿Desea borra el grupo?")) {
       this.grupoService.delete(id).subscribe(
         (res) => {

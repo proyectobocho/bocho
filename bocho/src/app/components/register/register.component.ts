@@ -14,12 +14,17 @@ export class RegisterComponent implements OnInit, OnDestroy {
 
   private subscription: Subscription = new Subscription();
   private isValidEmail = /\S+@\S+\.\S+/;
+  private isValidText = /^([a-zA-Z]|[\'\ñ\Ñ]?)*$/;
 
   grado: any;
 
+  aux = new Date();
+
+  fecha:string=`${this.aux.getFullYear()}-0${this.aux.getMonth()+1}-${this.aux.getDate()}`;
+
   registerForm = this.formB.group({
-    nombre: ['', [Validators.required, Validators.minLength(3)]],
-    apellido: ['', [Validators.required, Validators.minLength(3)]],
+    nombre: ['', [Validators.required, Validators.minLength(3), Validators.pattern(this.isValidText)]],
+    apellido: ['', [Validators.required, Validators.minLength(3), Validators.pattern(this.isValidText)]],
     password: ['', [Validators.required, Validators.minLength(8)]],
     email: ['', [Validators.required, Validators.pattern(this.isValidEmail)]],
     nacimiento: ['', [Validators.required]],
@@ -42,7 +47,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
       this.grado = res;
     });
 
-    this.baseError.base=this.registerForm;//le paso la estructura del formulario
+    this.baseError.base = this.registerForm;//le paso la estructura del formulario
   }
 
   onRegister() {
@@ -86,11 +91,11 @@ export class RegisterComponent implements OnInit, OnDestroy {
 
 
   //refactor de los messages de los campos del formulario, pues en teoria ahora es dinamico
-  checkField(field:string):boolean{
-    return  this.baseError.isValidField(field);
+  checkField(field: string): boolean {
+    return this.baseError.isValidField(field);
   }
 
-  fieldMessage(field:string):string{
+  fieldMessage(field: string): string {
     return this.baseError.getErrorMessage(field);
   }
 

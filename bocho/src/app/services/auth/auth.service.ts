@@ -18,7 +18,7 @@ export class AuthService {
 
   private user = new BehaviorSubject<UserResponse>(null);//parte del refactor
 
-  constructor(private http: HttpClient, private router:Router) {
+  constructor(private http: HttpClient, private router: Router) {
     this.checkToken();
   }
 
@@ -30,10 +30,10 @@ export class AuthService {
   } */
 
   //parte del refactor
-  get user$():Observable<UserResponse>{
+  get user$(): Observable<UserResponse> {
     return this.user.asObservable();
   }
-  get userValue():UserResponse{
+  get userValue(): UserResponse {
     return this.user.getValue();
   }
   //fin del refactor
@@ -56,7 +56,7 @@ export class AuthService {
 
   logout(): void {
     localStorage.removeItem('user');
-
+    localStorage.removeItem('userId');
     /* this.loggedIn.next(false);
     this.userToken.next(null); */
 
@@ -80,8 +80,9 @@ export class AuthService {
 
   private saveLocalStorage(user: UserResponse): void {
     //localStorage.setItem('token', token);
-    const { userId, message, ...rest } = user;
+    const { message, userId, ...rest } = user;
     localStorage.setItem('user', JSON.stringify(rest));
+    localStorage.setItem('userId',userId.toString());
   }
 
   private checkToken(): void {
@@ -93,7 +94,7 @@ export class AuthService {
       } else {
         /* this.loggedIn.next(true);
         this.userToken.next(user.token); */
-        
+
         this.user.next(user);//parte del refactor
       }
     }

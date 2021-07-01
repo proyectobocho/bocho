@@ -1,8 +1,9 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { ComentariosService } from 'src/app/services/comentarios/comentarios.service';
+import { LikeService } from 'src/app/services/like/like.service';
 import { PublicacionService } from 'src/app/services/publicacion/publicacion.service';
 import { BaseErrorMessage } from 'src/app/utils/base-field-error';
 
@@ -12,7 +13,7 @@ import { BaseErrorMessage } from 'src/app/utils/base-field-error';
   encapsulation: ViewEncapsulation.None,
   styleUrls: ['./home.component.css'],
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnInit,OnDestroy {
 
   //user: any;
   flag: boolean = false;
@@ -20,7 +21,9 @@ export class HomeComponent implements OnInit {
   coments: any = [];
   comentar: boolean = false;
   idPublicacion: number = 0;
-  contenido:any;
+  contenido: any;
+  likes: any = [];
+  ok: any = [];
 
   comentarioForm = this.formB.group({
     descripcion: ['', [Validators.required, Validators.minLength(2)]]
@@ -32,8 +35,12 @@ export class HomeComponent implements OnInit {
     private comentariosService: ComentariosService,
     private modalService: NgbModal,
     private baseError: BaseErrorMessage,
-    private formB: FormBuilder
+    private formB: FormBuilder,
+    private likeService: LikeService
   ) { }
+  ngOnDestroy(): void {
+    this.modalService.dismissAll();
+  }
 
   ngOnInit(): void {
     this.publicacionService.getAll().subscribe((res) => {
@@ -47,10 +54,16 @@ export class HomeComponent implements OnInit {
   open(content: any, id: any) {
     if (id) {
       this.idPublicacion = id;
-      this.contenido=content;
+      this.contenido = content;
       this.comentariosService.getAll(this.idPublicacion).subscribe((res) => {
         this.coments = res;
-      })
+      });
+      this.likeService.list(this.idPublicacion).subscribe((res) => {
+        this.likes = res;
+        let id = parseInt(localStorage.getItem("userId"));
+        this.ok = this.likes.find((x: any) => x.user.id == id);
+      });
+
     }
     this.modalService.open(content, { backdropClass: 'prueba' });
   }
@@ -63,19 +76,30 @@ export class HomeComponent implements OnInit {
     //console.log(formValue);
     this.comentariosService
       .new(formValue, this.idPublicacion)
-      .subscribe((res)=>{
-        if(res){
-          window.alert(res.message);
-          this.comentar=false;
+      .subscribe((res) => {
+        if (res) {
+          //window.alert(res.message);
+          this.comentar = false;
           this.modalService.dismissAll();
           this.ngOnInit();
-          this.open(this.contenido,this.idPublicacion);
+          this.open(this.contenido, this.idPublicacion);
         }
       })
   }
 
-  creado($event:any){
-    this.flag=$event;
+  megusta() {
+    this.likeService.change(this.idPublicacion).subscribe(
+      (res) => {
+        console.log(res)
+        this.modalService.dismissAll();
+        this.ngOnInit();
+        this.open(this.contenido, this.idPublicacion);
+      }
+    );
+  }
+
+  creado($event: any) {
+    this.flag = $event;
     this.ngOnInit();
   }
 

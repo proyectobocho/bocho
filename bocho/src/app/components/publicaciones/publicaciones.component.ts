@@ -18,8 +18,9 @@ export class PublicacionesComponent implements OnInit, OnDestroy {
   idPublicacion: number = null;
 
   publicacionForm = this.formB.group({
-    contenido: ['', [Validators.required, Validators.minLength(5)]],
-    linkDoc: ['', [Validators.required, Validators.minLength(4)]],
+    contenido: ['', [Validators.required, Validators.minLength(5),Validators.maxLength(250)]],
+    //linkDoc: ['', [Validators.required, Validators.minLength(4)]],
+    linkDoc: [''],
     privado: ['', [Validators.required]],
     titulo: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(50)]]
   });
@@ -67,7 +68,7 @@ export class PublicacionesComponent implements OnInit, OnDestroy {
     this.subscription.add(
       this.publicacionService.edit(formValue, this.idPublicacion).subscribe((res) => {
         if (res) {
-          window.alert(res.message);
+          //window.alert(res.message);
           this.modalService.dismissAll();
           this.ngOnInit();
         }
@@ -79,12 +80,12 @@ export class PublicacionesComponent implements OnInit, OnDestroy {
     if (window.confirm("¿Desea eliminar la publicacion seleccionada? ⚠️")) {
       this.publicacionService.delete(id).subscribe((res) => {
         if (res) {
-          window.alert(res.message);
+          //window.alert(res.message);
           this.ngOnInit();
         }
       })
     } else {
-      window.alert("eesa, ojo al tejo perrito malvado 🤡");
+      //window.alert("eesa, ojo al tejo perrito malvado 🤡");
     }
   }
 

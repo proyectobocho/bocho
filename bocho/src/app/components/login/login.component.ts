@@ -41,7 +41,7 @@ export class LoginComponent implements OnInit, OnDestroy {
       this.authService.login(formValue).subscribe((res) => {
         if (res) {
           //console.log(res);
-          window.alert(`Bienvenido ${res.user.nombre} ${res.user.apellido} 😎`);
+          //window.alert(`Bienvenido ${res.user.nombre} ${res.user.apellido} 😎`);
           this.router.navigate(['/home']);
         }
       })

@@ -16,7 +16,7 @@
                     </div>
                     <div class="form-group">
                         <label>Contraseña</label>
-                        <input type="text" class="form-control" formControlName="password" required>
+                        <input type="password" class="form-control" formControlName="password" required>
                         <div class="invalid-field" *ngIf="checkField('password')">
                             <small>{{fieldMessage('password')}}</small>
                         </div>
@@ -37,7 +37,8 @@
                     </div>
                     <div class="form-group">
                         <label>Fecha de Nacimiento</label>
-                        <input type="date" class="form-control" formControlName="nacimiento" required>
+                        <input type="date" class="form-control" formControlName="nacimiento" max={{fecha}} required>
+                        {{fecha}}
                         <div class="invalid-field" *ngIf="checkField('nacimiento')">
                             <small>{{fieldMessage('nacimiento')}}</small>
                         </div>
@@ -52,7 +53,8 @@
                             <small>{{fieldMessage('grado')}}</small>
                         </div>
                     </div>
-                    <button [disabled]="registerForm.invalid" type="submit" class="btn btn-outline-light btn-block">Registrarse</button>
+                    <button [disabled]="registerForm.invalid" type="submit"
+                        class="btn btn-outline-light btn-block">Registrarse</button>
                 </form>
             </div>
         </div>

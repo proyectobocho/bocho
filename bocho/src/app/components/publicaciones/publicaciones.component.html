@@ -10,7 +10,7 @@
                         <h5 class="card-title text-capitalize font-italic ">{{p.titulo}}</h5>
                         <p class="card-text"*ngIf="p.grupo!=null"><small class="text-muted" >Grupo: {{p.grupo.nombre}}</small></p>
                         <p class="card-text"><small class="text-muted">Privado: {{p.privado | boolean}}</small></p>
-                        <p class="card-text text-justify" style="overflow-y: scroll; height: 200px; resize: none;">{{p.contenido}}</p>
+                        <p class="card-text text-justify" style="overflow-y: scroll; height: 200px; resize: none;" [innerHtml]="p.contenido">{{p.contenido}}</p>
                     </div>
                 </div>
                 <div class="col-md-12">
@@ -53,6 +53,9 @@
             <div class="form-group">
                 <label>Titulo: </label>
                 <input class="form-control" type="text" formControlName="titulo">
+                <div class="invalid-field" *ngIf="checkField('titulo')">
+                    <small>{{fieldMessage('titulo')}}</small>
+                </div>
             </div>
             <div class="form-group form-row">
                 <label class="col">Visibilidad: </label>
@@ -61,17 +64,26 @@
                     <option value={{true}}>Privado</option>
                     <option value={{false}}>Publico</option>
                 </select>
+                <div class="invalid-field" *ngIf="checkField('privado')">
+                    <small>{{fieldMessage('privado')}}</small>
+                </div>
             </div>
             <div class="form-group">
                 <label>Contenido</label>
                 <textarea formControlName="contenido" rows="8" class="form-control"></textarea>
+                <div class="invalid-field" *ngIf="checkField('contenido')">
+                    <small>{{fieldMessage('contenido')}}</small>
+                </div>
             </div>
             <div class="form-group">
                 <label>Link de Imagen</label>
                 <input type="text" class="form-control" formControlName="linkDoc">
+                <div class="invalid-field" *ngIf="checkField('linkDoc')">
+                    <small>{{fieldMessage('linkDoc')}}</small>
+                </div>
             </div>
             <div class="modal-footer">
-                <button type="submit" class="btn btn-outline-dark">Aceptar</button>
+                <button type="submit" class="btn btn-outline-dark" [disabled]="publicacionForm.invalid">Aceptar</button>
             </div>
         </form>
     </div>

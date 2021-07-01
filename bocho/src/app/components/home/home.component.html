@@ -21,13 +21,14 @@
                         <small class="text-muted">Usuario: {{p.user.nombre}}
                             {{p.user.apellido}}, Contacto: {{p.user.email}}</small>
                         <hr>
-                        <p style="overflow-y: scroll; height: 200px; resize: none;" class="card-text text-justify">{{p.contenido}}</p>
+                        <p style="overflow-y: scroll; height: 200px; resize: none;" class="card-text text-justify" [innerHtml]="p.contenido">
+                            {{p.contenido}}</p>
                     </div>
                 </div>
                 <div class="col-md-12 text-center">
                     <hr>
                     <button type="button" class="btn btn-outline-dark btn-block" (click)="open(comentarios,p.id)">Ver
-                        {{p.comentario.length}} comentarios / Comentar</button>
+                        {{p.comentario.length}} comentarios / likes</button>
                 </div>
                 <div class="col-md-12">
                     <hr>
@@ -43,43 +44,71 @@
 </div>
 
 <ng-template #comentarios let-modal>
-    <div class="modal-header">
-        <h4 class="modal-tittle">Comentarios</h4>
-        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
-            <span aria-hidden="true">&times;</span>
-        </button>
-    </div>
-    <div class="modal-body text-center">
-        <button type="button" (click)="comentar=!comentar" class="btn btn-outline-secondary"
-            *ngIf="!comentar">Comentar</button>
-        <form [formGroup]="comentarioForm" (ngSubmit)="onSubmit()" *ngIf="comentar">
-            <div class="card border-secondary">
-                <div class="card-header">
-                    <label>Comentario</label>
-                </div>
-                <div class="card-body">
-                    <div class="form-group">
-                        <input type="text" class="form-control" formControlName="descripcion"
-                            placeholder="escriba aqui ...">
-                        <div class="invalid-field" *ngIf="checkField('descripcion')">
-                            <small>{{fieldMessage('descripcion')}}</small>
+    <ul class="nav nav-tabs" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+            <a class="nav-link active" id="comentario-tab" data-toggle="tab" href="#comentario" role="tab"
+                aria-controls="comentario" aria-selected="true">Comentarios</a>
+        </li>
+        <li class="nav-item" role="presentation">
+            <a class="nav-link" id="likes-tab" data-toggle="tab" href="#likes" role="tab" aria-controls="likes"
+                aria-selected="false">Likes</a>
+        </li>
+    </ul>
+    <div class="tab-content" id="myTabContent">
+        <div class="tab-pane fade show active" id="comentario" role="tabpanel" aria-labelledby="comentario-tab">
+            <div class="modal-header">
+                <h4 class="modal-tittle">Comentarios</h4>
+                <!-- <button type="button" class="close float-right" aria-label="Close" (click)="modal.dismiss('Cross click')">
+                    <span aria-hidden="true">&times;</span>
+                </button> -->
+            </div>
+            <div class="modal-body text-center">
+                <button type="button" (click)="comentar=!comentar" class="btn btn-outline-secondary"
+                    *ngIf="!comentar">Comentar</button>
+                <form [formGroup]="comentarioForm" (ngSubmit)="onSubmit()" *ngIf="comentar">
+                    <div class="card border-secondary">
+                        <div class="card-header">
+                            <label>Comentario</label>
+                        </div>
+                        <div class="card-body">
+                            <div class="form-group">
+                                <input type="text" class="form-control" formControlName="descripcion"
+                                    placeholder="escriba aqui ...">
+                                <div class="invalid-field" *ngIf="checkField('descripcion')">
+                                    <small>{{fieldMessage('descripcion')}}</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class=" card-footer btn-group btn-block">
+                            <button type="submit" class="btn btn-outline-success">Comentar</button>
+                            <button type="button" class="btn btn-outline-warning"
+                                (click)="comentar=!comentar">Cancelar</button>
                         </div>
                     </div>
-                </div>
-                <div class=" card-footer btn-group btn-block">
-                    <button type="submit" class="btn btn-outline-success">Comentar</button>
-                    <button type="button" class="btn btn-outline-warning" (click)="comentar=!comentar">Cancelar</button>
+                </form>
+
+            </div>
+            <hr>
+            <div class="modal-body">
+                <div class=" alert alert-secondary" *ngFor="let c of coments">
+                    <p class="card-text text-center"> <strong>{{c.user.nombre | titlecase}} {{c.user.apellido |
+                            titlecase}}</strong>: {{c.descripcion}} <br><small class="text-muted">Fecha: {{c.fecha |
+                            date:'d/M/yyyy H:mm:ss'}}</small></p>
                 </div>
             </div>
-        </form>
-
-    </div>
-    <hr>
-    <div class="modal-body">
-        <div class=" alert alert-secondary" *ngFor="let c of coments">
-            <p class="card-text text-center"> <strong>{{c.user.nombre | titlecase}} {{c.user.apellido |
-                    titlecase}}</strong>: {{c.descripcion}} <br><small class="text-muted">Fecha: {{c.fecha |
-                    date:'d/M/yyyy H:mm:ss'}}</small></p>
+        </div>
+        <div class="tab-pane fade" id="likes" role="tabpanel" aria-labelledby="likes-tab">
+            <div class="modal-header">
+                <h2>Likes:</h2>
+                <button type="button" class="btn btn-primary" (click)="megusta()" *ngIf="ok==undefined">Me gusta 👍</button>
+                <button type="button" class="btn btn-primary" (click)="megusta()" *ngIf="ok!=[] && ok!=undefined">No me gusta 👎</button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-primary" role="alert" *ngFor="let l of likes">
+                    <p class="card-text"><strong>Usuario:</strong> {{l.user.nombre}} {{l.user.apellido}}</p>
+                </div>
+            </div>
         </div>
     </div>
+
 </ng-template>

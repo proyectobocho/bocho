@@ -5,8 +5,8 @@
             <h3 style="color: white;">Grupos</h3>
             <input type="text" class="form-control" placeholder="Buscar grupos ..." name="filter" [(ngModel)]="filter">
             <br>
-            <select class="custom-select" [(ngModel)]="group" (click)="ver()">
-                <option selected disabled>Ver Resultados</option>
+            <select class="custom-select" [(ngModel)]="group" (change)="ver()">
+                <option value="" disabled selected>Ver Resultados</option>
                 <option *ngFor="let g of grupos | filter:filter" value={{g|json}}>{{g.nombre}}</option>
             </select>
         </div>
@@ -21,7 +21,7 @@
                     <div class="col-md-7">
                         <h6 class="card-tittle">{{mg.grupo.nombre}}</h6>
                         <button type="button" class="btn btn-sm btn-block btn-outline-secondary"
-                            (click)="seleccionado(mg.grupo.id)" (click)="search=false">Ver</button>
+                            (click)="seleccionado(mg.grupo.id)" (click)="search=true">Ver</button>
                     </div>
                 </div>
             </div>
@@ -35,7 +35,7 @@
     </div>
     <div class="col-9" style="background-color: rgb(193, 193, 196);">
         <br>
-        <div class="card" *ngIf="selected">
+        <div class="card" *ngIf="search">
             <div class="center-cropped">
                 <img src={{grupo.foto}} alt="error :V" class="card-img-top">
             </div>
@@ -47,7 +47,7 @@
                 <p class="card-text"><strong>Descripción: </strong>{{grupo.descripcion}}</p>
                 <p class="card-text"><small>Mi rol: {{miRol.rol}}</small></p>
                 <div class="btn-group btn">
-                    <button (click)="desunirse(grupo.id)" class="btn btn-outline-danger">Desunirse</button>
+                    <button *ngIf="miRol.rol!='admin'" (click)="desunirse(grupo.id)" class="btn btn-outline-danger">Desunirse</button>
                     <button *ngIf="miRol.rol=='admin'" (click)="editGroup(nuevogrupo)" class="btn btn-outline-warning">Editar</button>
                     <button *ngIf="miRol.rol=='admin'" (click)="eliminarGrupo(grupo.id)" class="btn btn-outline-danger">Eliminar</button>
                 </div>
@@ -84,7 +84,7 @@
                                     <hr>
                                     <button type="button" class="btn btn-outline-dark btn-block"
                                         (click)="open(comentarios,p.id)">Ver {{p.comentario.length}} comentarios /
-                                        Comentar</button>
+                                        like</button>
                                 </div>
                                 <div class="col-md-12">
                                     <hr>
@@ -105,7 +105,7 @@
             <h6>Selecione un grupo para ver o Busque uno</h6>
         </div>
 
-        <div class="card" *ngIf="search===true">
+        <div class="card" *ngIf="!search && selected">
             <div class="card-header">
                 <div class="center-cropped">
                     <img src={{group.foto}} alt="error :V" class="card-img-top">
@@ -117,53 +117,83 @@
                 <p class="card-text"><small class="text-muted">Creado: {{group.creacion | date:'dd-mm-yyyy HH:mm:ss'}}</small></p>
             </div>
             <div class="card-footer">
-                <button type="button" class="btn btn-block btn-outline-primary" (click)="unirse()">Unirme</button>
+                <button *ngIf="!bloqueado" type="button" class="btn btn-block btn-outline-primary" (click)="unirse()">Unirme</button>
+                <button *ngIf="bloqueado" type="button" class="btn btn-block btn-outline-primary" (click)="seleccionado(group.id)">Ver</button>
             </div>
         </div>
+        <br>
     </div>
 </div>
 
 
 <ng-template #comentarios let-modal>
-    <div class="modal-header">
-        <h4 class="modal-tittle">Comentarios</h4>
-        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
-            <span aria-hidden="true">&times;</span>
-        </button>
-    </div>
-    <div class="modal-body text-center">
-        <button type="button" (click)="comentar=!comentar" class="btn btn-outline-secondary"
-            *ngIf="!comentar">Comentar</button>
-        <form [formGroup]="comentarioForm" (ngSubmit)="onSubmit()" *ngIf="comentar">
-            <div class="card border-secondary">
-                <div class="card-header">
-                    <label>Comentario</label>
-                </div>
-                <div class="card-body">
-                    <div class="form-group">
-                        <input type="text" class="form-control" formControlName="descripcion"
-                            placeholder="escriba aqui ...">
-                        <div class="invalid-field" *ngIf="checkField('descripcion')">
-                            <small>{{fieldMessage('descripcion')}}</small>
+    <ul class="nav nav-tabs" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+            <a class="nav-link active" id="comentario-tab" data-toggle="tab" href="#comentario" role="tab"
+                aria-controls="comentario" aria-selected="true">Comentarios</a>
+        </li>
+        <li class="nav-item" role="presentation">
+            <a class="nav-link" id="likes-tab" data-toggle="tab" href="#likes" role="tab" aria-controls="likes"
+                aria-selected="false">Likes</a>
+        </li>
+    </ul>
+    <div class="tab-content" id="myTabContent">
+        <div class="tab-pane fade show active" id="comentario" role="tabpanel" aria-labelledby="comentario-tab">
+            <div class="modal-header">
+                <h4 class="modal-tittle">Comentarios</h4>
+                <!-- <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+                    <span aria-hidden="true">&times;</span>
+                </button> -->
+            </div>
+            <div class="modal-body text-center">
+                <button type="button" (click)="comentar=!comentar" class="btn btn-outline-secondary"
+                    *ngIf="!comentar">Comentar</button>
+                <form [formGroup]="comentarioForm" (ngSubmit)="onSubmit()" *ngIf="comentar">
+                    <div class="card border-secondary">
+                        <div class="card-header">
+                            <label>Comentario</label>
+                        </div>
+                        <div class="card-body">
+                            <div class="form-group">
+                                <input type="text" class="form-control" formControlName="descripcion"
+                                    placeholder="escriba aqui ...">
+                                <div class="invalid-field" *ngIf="checkField('descripcion')">
+                                    <small>{{fieldMessage('descripcion')}}</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class=" card-footer btn-group btn-block">
+                            <button type="submit" class="btn btn-outline-success">Comentar</button>
+                            <button type="button" class="btn btn-outline-warning" (click)="comentar=!comentar">Cancelar</button>
                         </div>
                     </div>
-                </div>
-                <div class=" card-footer btn-group btn-block">
-                    <button type="submit" class="btn btn-outline-success">Comentar</button>
-                    <button type="button" class="btn btn-outline-warning" (click)="comentar=!comentar">Cancelar</button>
+                </form>
+        
+            </div>
+            <hr>
+            <div class="modal-body">
+                <div class=" alert alert-secondary" *ngFor="let c of coments">
+                    <p class="card-text text-center"> <strong>{{c.user.nombre | titlecase}} {{c.user.apellido |
+                            titlecase}}</strong>: {{c.descripcion}} <br><small class="text-muted">Fecha: {{c.fecha |
+                            date:'d/M/yyyy H:mm:ss'}}</small></p>
                 </div>
             </div>
-        </form>
+        </div>
 
-    </div>
-    <hr>
-    <div class="modal-body">
-        <div class=" alert alert-secondary" *ngFor="let c of coments">
-            <p class="card-text text-center"> <strong>{{c.user.nombre | titlecase}} {{c.user.apellido |
-                    titlecase}}</strong>: {{c.descripcion}} <br><small class="text-muted">Fecha: {{c.fecha |
-                    date:'d/M/yyyy H:mm:ss'}}</small></p>
+        <div class="tab-pane fade" id="likes" role="tabpanel" aria-labelledby="likes-tab">
+            <div class="modal-header">
+                <h2>Likes:</h2>
+                <button type="button" class="btn btn-primary" (click)="megusta()" *ngIf="ok==undefined">Me gusta 👍</button>
+                <button type="button" class="btn btn-primary" (click)="megusta()" *ngIf="ok!=[] && ok!=undefined">No me gusta 👎</button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-primary" role="alert" *ngFor="let l of likes">
+                    <p class="card-text"><strong>Usuario:</strong> {{l.user.nombre}} {{l.user.apellido}}</p>
+                </div>
+            </div>
         </div>
     </div>
+
 </ng-template>
 
 <ng-template #nuevogrupo let-modal>

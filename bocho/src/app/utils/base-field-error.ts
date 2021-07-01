@@ -29,7 +29,7 @@ export class BaseErrorMessage {
             const maxlength = errors?.maxlength?.requiredLength;
             const messages: any = {
                 required: 'Campo obligatorio',
-                pattern: 'No es un email valido',
+                pattern: `No es un ${field} valido`,
                 minlength: `Campo de minimo ${minlength} caracteres`,
                 maxlength: `Campo de maximo ${maxlength} caracteres`,
             };
@@ -37,8 +37,8 @@ export class BaseErrorMessage {
             const errorKey = Object.keys(errors).find(Boolean);
 
             this.errorMessage = messages[errorKey];
-        }else{
-            this.errorMessage="";
+        } else {
+            this.errorMessage = "";
         }
         return this.errorMessage;
     }

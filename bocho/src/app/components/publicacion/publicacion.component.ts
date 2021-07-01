@@ -23,7 +23,8 @@ export class PublicacionComponent implements OnInit {
 
   publicacionForm = this.formB.group({
     contenido: ['', [Validators.required, Validators.minLength(5)]],
-    linkDoc: ['', [Validators.required, Validators.minLength(4)]],
+    //linkDoc: ['', [Validators.required, Validators.minLength(4)]],
+    linkDoc: [''],
     privado: ['false', [Validators.required]],
     titulo: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(50)]]
   });
@@ -53,7 +54,7 @@ export class PublicacionComponent implements OnInit {
         .subscribe((res => {
           if (res) {
             console.log("res: ", res);
-            window.alert("Se realizo la publicacion");
+            //window.alert("Se realizo la publicacion");
             this.ngOnInit();
             this.sendCancel();
             this.creado = true;

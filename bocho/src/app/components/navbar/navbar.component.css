@@ -78,7 +78,7 @@ a:hover {
 }
 
 a:before {
-  content: " ";
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
@@ -154,7 +154,7 @@ h2 span {
   transition: 0.4s;
 }
 h2:hover span:nth-child(1) {
-  margin-right: 10px;
+  margin-right: 0px;
 }
 h2:hover span:nth-child(1)::after {
   content: "O";

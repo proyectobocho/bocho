@@ -39,9 +39,9 @@ export class NavbarComponent implements OnInit, OnDestroy {
     if (window.confirm("¿Esta seguro que quiere salir? 🤔")) {
       this.authService.logout();
       this.isLogged = false;
-      window.alert("Hasta la proxima 😥");
+      //window.alert("Hasta la proxima 😥");
     } else {
-      window.alert("Sustos que dan gustos 🙃");
+      //window.alert("Sustos que dan gustos 🙃");
     }
   }
 
